@@ -1,0 +1,110 @@
+{# Base html file import #}
+{% extends "base.html" %}
+
+{# Dynamic head adding#}
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'view_all_users.css' %}">
+{% endblock %}
+
+{# Title add #}
+{% block title %}
+    View ALl Users
+{% endblock %}
+
+{# HTML content #}
+{% block content %}
+    <div class="container py-5">
+        <h4 class="mb-3">Users List</h4>
+        <div class="table-responsive">
+            {% csrf_token %}
+            <table class="table table-striped table-hover ">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Mobile Number</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Verified Profile</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in user_data %}
+                    <tr>
+                        <th scope="row">
+                            {% if forloop.counter == 10 %}
+                                {{ forloop.reset }}
+                            {% endif %}
+                            {{ forloop.counter }}
+                        </th>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.mobile_number }}</td>
+                        <td>{{ user.age }}</td>
+                        <td>{{ user.verified_profile }}</td>
+                        <td>
+                            <a href="/user-form/{{ user.email }}">
+                            <div class="badge rounded-circle" style="background-color: #008545">
+                                <i class="bi bi-pencil"></i>
+                            </div>
+                                </a>
+                        </td>
+                        <td>
+                            <div id="delete-button" onclick="onDelete('{{ user.email }}')"
+                                 data-document-email="{{ user.email }}" class="badge rounded-circle"
+                                 style="background-color: #F53D3D">
+                                <i class="bi bi-trash"></i>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {#    <ul>#}
+    {#        {% for x in user %}#}
+    {#            <li>{{ x.name }}</li>#}
+    {#        {% endfor %}#}
+    {#    </ul>#}
+
+    <script>
+        function onDelete(email) {
+            var csrftoken = getCookie('csrftoken');
+            fetch('/delete-user/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body:  JSON.stringify({"document_email": email}),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);  // Display a message to the user
+                    location.reload();   // Refresh the page or update the UI as needed
+                })
+                .catch(error => console.error(error));
+        };
+
+        // Function to get the CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+</script>
+{% endblock %}

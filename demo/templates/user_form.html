@@ -1,0 +1,38 @@
+{# Base html file import #}
+{% extends "base.html" %}
+
+{# Dynamic head adding#}
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'users_form.css' %}">
+{% endblock %}
+
+{# Title add #}
+{% block title %}
+    View ALl Users
+{% endblock %}
+
+{# HTML content #}
+{% block content %}
+    <div class="container py-5">
+        <h4 class="mb-3">Add Users</h4>
+        <div class="fromContainer">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.name.label_tag }} {{ form.name }}
+                {{ form.email.label_tag }} {{ form.email }}
+                {{ form.age.label_tag }} {{ form.age }}
+                {{ form.profile_verified.label_tag }} {{ form.profile_verified }}
+                {{ form.mobile_number.label_tag }} {{ form.mobile_number }}
+                <button type="submit">Submit</button>
+                 <ul class="mt-4">
+                {% for field, errors in form.errors.items %}
+                    <li>{{ field }}: {{ errors.0 }}</li>
+                {% endfor %}
+            </ul>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

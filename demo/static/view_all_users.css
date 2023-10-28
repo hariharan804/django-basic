@@ -1,0 +1,11 @@
+.badge {
+    width: 36px;
+    height: 36px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.badge i {
+    font-size: 1.4em;
+}

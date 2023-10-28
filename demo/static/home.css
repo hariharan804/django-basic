@@ -1,0 +1,18 @@
+h1{
+    color: blue;
+}
+
+.counterCard .badge {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.counterCard .badge i {
+    font-size: 1.6em;
+}
+.counterCard:hover{
+ box-shadow:  0 0.345rem 0.85rem rgba(0, 0, 0, 0.075) !important;
+}

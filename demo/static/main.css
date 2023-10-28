@@ -1,0 +1,29 @@
+html, body {
+    background-color: #f4f7ff;
+    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+.bodyContent {
+    min-height: calc(100vh - 100px);
+    overflow: auto;
+}
+
+footer {
+    margin: 0;
+    padding: 10px;
+    background-color: #8262F7;
+    color: #fff;
+    text-align: center;
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    width: 100%;
+}
+
+footer p {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+}
+footer p a{color:#ffffff !important;}
