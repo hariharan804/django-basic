@@ -7,3 +7,4 @@ class UserForm(forms.Form):
     age = forms.IntegerField()
     profile_verified = forms.BooleanField(required=False)
     mobile_number = forms.CharField(max_length=25)
+

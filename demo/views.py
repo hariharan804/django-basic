@@ -1,5 +1,5 @@
 import json
-
+from bson import ObjectId
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 
@@ -10,7 +10,6 @@ import time
 
 
 # Create your views here.
-
 
 def home(request):
     collection_count = len(db.list_collection_names())
@@ -48,7 +47,7 @@ def test():
 
 def view_all_users(request):
     user_data = users_collection.find({})
-    print(user_data)
+    print(str(user_data[0]))
     context = {"user_data": user_data}
     return render(request, 'view_all_users.html', context=context)
 
@@ -73,11 +72,37 @@ def delete_user(request):
         return JsonResponse(response_data)
 
 
-def user_form(request, email=''):
+def user_form(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
-            email_id = form['email'].value()
+            new_user = {
+                "name": form['name'].value(),
+                "email": form['email'].value(),
+                "age": form['age'].value(),
+                "verified_profile": form.cleaned_data.get('profile_verified'),
+                "mobile_number": form['mobile_number'].value(),
+            }
+            # Process form data  save to database
+            result = users_collection.insert_one(new_user)
+            if result.acknowledged:
+                print("User Added successfully with ID:", result)
+                return redirect('view-all-users')
+            else:
+                print("User insertion failed.")
+
+    # Redirect or display a success message
+    else:
+        form = UserForm()
+
+    return render(request, 'user_form.html', {'form': form})
+
+
+def user_form_edit(request, email=''):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            # u_id = form['id'].value()
             new_user = {
                 "name": form['name'].value(),
                 "email": form['email'].value(),
@@ -87,27 +112,17 @@ def user_form(request, email=''):
             }
             update_data = {'$set': new_user}
             # Process form data  save to database
-            if email:
-                result = users_collection.update_one({email: email_id}, update_data, upsert=True)
-                if result.modified_count == 0:
-                    print("Document inserted.")
-                else:
-                    print("Document updated.")
 
-            else:
-                result = users_collection.insert_one(new_user)
-            if result.acknowledged:
-                print("User Added successfully with ID:", result)
+            result = users_collection.update_one({'_id': ObjectId(email)}, update_data, upsert=True)
+            if result.modified_count == 0:
+                print("Document inserted.")
                 return redirect('view-all-users')
             else:
-                print("User insertion failed.")
-
-    # Redirect or display a success message
+                print("Document updated.")
+                return redirect('view-all-users')
     else:
-        if email:
-            old_user = users_collection.find_one({"email": email})
-            form = UserForm(old_user)
-        else:
-            form = UserForm()
+        old_user = users_collection.find_one({'_id': ObjectId(email)})
+        print(str(old_user))
+        form = UserForm(old_user)
 
     return render(request, 'user_form.html', {'form': form})

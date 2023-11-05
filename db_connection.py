@@ -1,6 +1,6 @@
 import pymongo
 
-url = 'mongodb+srv://hariharan:9578920211@cluster0.7wkpyye.mongodb.net/'
+url = 'mongodb+srv://hariharan:<pass>@cluster0.7wkpyye.mongodb.net/'
 databaseName = 'user_db'
 
 client = pymongo.MongoClient(url)

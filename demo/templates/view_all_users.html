@@ -4,6 +4,7 @@
 {# Dynamic head adding#}
 {% block head %}
     {% load static %}
+     {% load custom_filters %}
     <link rel="stylesheet" href="{% static 'view_all_users.css' %}">
 {% endblock %}
 
@@ -46,7 +47,7 @@
                         <td>{{ user.age }}</td>
                         <td>{{ user.verified_profile }}</td>
                         <td>
-                            <a href="/user-form/{{ user.email }}">
+                                <a href="/user-form-edit/{{ user|get_attribute_with_underscore:"_id" }}">
                             <div class="badge rounded-circle" style="background-color: #008545">
                                 <i class="bi bi-pencil"></i>
                             </div>
